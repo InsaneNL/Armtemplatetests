@@ -5,7 +5,7 @@
         "adminUsername": {
             "type": "string",
             "metadata": {
-                "description": "The name of the administrator account of the new VM and domain"
+                "description": "test The testname of the administrator account of the new VM and domain"
             }
         },
         "adminPassword": {
@@ -174,7 +174,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2019-10-01",
             "name": "VNet",
             "properties": {
                 "mode": "Incremental",
@@ -350,13 +350,13 @@
                         "settings": {
                             "ModulesUrl": "[uri(parameters('_artifactsLocation'), concat('DSC/CreateADPDC.zip', parameters('_artifactsLocationSasToken')))]",
                             "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-                            "Properties": {
+                            
                                 "DomainName": "[parameters('domainName')]",
                                 "AdminCreds": {
                                     "UserName": "[parameters('adminUsername')]",
                                     "Password": "PrivateSettingsRef:AdminPassword"
                                 }
-                            }
+                            
                         },
                         "protectedSettings": {
                             "Items": {
@@ -369,7 +369,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2019-10-01",
             "name": "UpdateVNetDNS",
             "dependsOn": [
                 "CreateADForest"
