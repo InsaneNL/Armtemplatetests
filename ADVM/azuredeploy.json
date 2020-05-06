@@ -5,7 +5,7 @@
         "adminUsername": {
             "type": "string",
             "metadata": {
-                "description": "test The testname of the administrator account of the new VM and domain"
+                "description": "The name of the administrator account of the new VM and domain"
             }
         },
         "adminPassword": {
@@ -350,13 +350,13 @@
                         "settings": {
                             "ModulesUrl": "[uri(parameters('_artifactsLocation'), concat('DSC/CreateADPDC.zip', parameters('_artifactsLocationSasToken')))]",
                             "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-                            
+                            "properties":{
                                 "DomainName": "[parameters('domainName')]",
                                 "AdminCreds": {
                                     "UserName": "[parameters('adminUsername')]",
                                     "Password": "PrivateSettingsRef:AdminPassword"
                                 }
-                            
+                        }
                         },
                         "protectedSettings": {
                             "Items": {
