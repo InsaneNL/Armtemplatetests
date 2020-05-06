@@ -161,7 +161,8 @@
             "name": "[parameters('networkInterfaceName')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "VNet"
+                "VNet",
+                "[parameters('publicIPAddressName')]"
 
             ],
             "properties": {
@@ -254,7 +255,7 @@
                         "typeHandlerVersion": "2.19",
                         "autoUpgradeMinorVersion": true,
                         "settings": {
-                            "ModulesUrl": "[uri(parameters('_artifactsLocation'), concat('DSC/CreateADPDC.zip', parameters('_artifactsLocationSasToken')))]",
+                            "ModulesUrl": "[uri(parameters('_artifactsLocation'), concat('dsc/CreateADPDC.zip?raw=true', parameters('_artifactsLocationSasToken')))]",
                             "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
                             "properties":{
                                 "DomainName": "[parameters('domainName')]",
