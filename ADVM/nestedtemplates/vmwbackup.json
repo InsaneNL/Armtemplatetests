@@ -240,6 +240,10 @@
         "name": "protectedItemsCopy",
         "count": "[parameters('VMnumber')]"
       },
+      "dependsOn": [
+        "vmcopy",
+        "[resourceId('Microsoft.RecoveryServices/vaults', variables('vaultName'))]"
+      ],
       "properties": {
         "protectedItemType": "Microsoft.Compute/virtualMachines",
         "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', variables('vaultName'), variables('backupPolicyName'))]",
