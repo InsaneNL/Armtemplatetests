@@ -73,7 +73,7 @@
     }
   },
   "variables": {
-    "storageAccountName": "[concat(parameters('CustomerName'), 'store')]",
+    "storageAccountName": "[concat(parameters('vmnumber'), 'store')]",
     "networkInterfaceName": "[concat(parameters('CustomerName'), '-nic')]",
     "publicIPAddressName": "[concat(parameters('CustomerName'), '-ip')]",
     "vmName": "[concat(parameters('CustomerName'), '-vm')]",
