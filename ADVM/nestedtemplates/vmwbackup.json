@@ -73,7 +73,7 @@
     }
   },
   "variables": {
-    "storageAccountName": "[concat(parameters('vmnumber'), 'store')]",
+    "storageAccountName": "[concat(parameters('CustomerName'), 'store')]",
     "networkInterfaceName": "[concat(parameters('CustomerName'), '-nic')]",
     "publicIPAddressName": "[concat(parameters('CustomerName'), '-ip')]",
     "vmName": "[concat(parameters('CustomerName'), '-vm')]",
@@ -81,16 +81,8 @@
     "backupFabric": "Azure",
     "backupPolicyName": "DefaultPolicy",
     "protectionContainer": "[concat('iaasvmcontainer;iaasvmcontainerv2;', resourceGroup().name, ';', variables('vmName'))]",
-    "protectedItem": "[concat('vm;iaasvmcontainerv2;', resourceGroup().name, ';', variables('vmName'))]",
-    "copy": [
-        {
-            "name": "interface",
-            "count": "[parameters('VMnumber')]",
-            "input": {
-                "id": "[resourceId('Microsoft.Network/networkInterfaces', copyIndex(),variables('networkInterfaceName'),'-',parameters('VMpublicIP'))]"
-            }
-        }
-    ]
+    "protectedItem": "[concat('vm;iaasvmcontainerv2;', resourceGroup().name, ';', variables('vmName'))]"
+ 
   },
   "resources": [
     {
@@ -141,7 +133,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(copyIndex(),variables('publicIPAddressName')))]"
               },
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), 'vmsubnet')]"
@@ -221,8 +213,8 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('interface'))]"
-              
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(copyIndex(),variables('networkInterfaceName'),'-',parameters('VMpublicIP')))]"
+             
             }
           ]
         }
