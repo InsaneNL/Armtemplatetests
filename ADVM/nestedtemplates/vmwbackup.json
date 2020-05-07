@@ -115,7 +115,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          "domainNameLabel": "[concat(copyIndex(),parameters('dnsLabelPrefix'))]"
         }
       }
     },
