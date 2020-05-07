@@ -231,23 +231,19 @@
       },
       "properties": {}
     },
-    {
+     {
+      "name": "[concat( variables('vaultName'), '/Azure/', 'iaasvmcontainer;iaasvmcontainerv2;', variables('vmName'), copyindex(), '/vm;iaasvmcontainerv2;', variables('vmName'), copyindex())]",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-      "apiVersion": "2016-12-01",
-      "name": "[concat(variables('vaultName'), '/', variables('backupFabric'), '/', variables('protectionContainer'), '/', variables('protectedItem'),copyIndex())]",
       "copy": {
-        "name": "VMsforBackup",
+        "name": "protectedItemsCopy",
         "count": "[parameters('VMnumber')]"
       },
-      "dependsOn": [
-        "vmcopy",
-        "[resourceId('Microsoft.RecoveryServices/vaults', variables('vaultName'))]"
-      ],
       "properties": {
         "protectedItemType": "Microsoft.Compute/virtualMachines",
         "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', variables('vaultName'), variables('backupPolicyName'))]",
-        "sourceResourceId": "[resourceId(resourceGroup().name, 'Microsoft.Compute/virtualMachines', concat(copyIndex(),variables('vmName')))]"
-        
+        "sourceResourceId": "[resourceId(subscription().subscriptionId ,'astest2','Microsoft.Compute/virtualMachines', concat(copyindex(),variables('vmName')) )]"
       }
     }
   ]
