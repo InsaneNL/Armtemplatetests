@@ -242,7 +242,8 @@
       "properties": {
         "protectedItemType": "Microsoft.Compute/virtualMachines",
         "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', variables('vaultName'), variables('backupPolicyName'))]",
-        "sourceResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+        "sourceResourceId": "[resourceId('Microsoft.Compute/virtualMachines',concat(copyIndex(),variables('vmName')))]"
+        
       }
     }
   ]
