@@ -120,6 +120,12 @@
             "description": "Number of VM's to deploy"
             }
         },
+        "resourcegroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the resourcegroup to use"
+            }
+        },
         "windowsOSVersion": {
             "type": "string",
             "defaultValue": "2016-Datacenter",
@@ -362,6 +368,9 @@
                     },
                     "Customername": {
                         "value": "[parameters('CustomerName')]"
+                    },
+                    "resourcegroupname": {
+                        "value": "[parameters('resourcegroupname')]"
                     }
                 }
             }

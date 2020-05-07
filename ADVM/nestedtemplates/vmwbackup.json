@@ -6,8 +6,14 @@
       "type": "string",
       "metadata": {
         "description": "The name of the Virtual Network to Create"
-      }
-          },
+        }
+    },
+    "resourcegroupname": {
+        "type": "string",
+        "metadata": {
+            "description": "name of the resourcegroup to use"
+        }
+    },
     "CustomerName": {
       "type": "string",
       "maxLength": 8,
@@ -232,7 +238,7 @@
       "properties": {}
     },
      {
-      "name": "[concat( variables('vaultName'), '/Azure/', 'iaasvmcontainer;iaasvmcontainerv2;','adtest2',';', concat(copyindex(),variables('vmName')), '/vm;iaasvmcontainerv2;','adtest2', ';', concat(copyindex(),variables('vmName')))]",
+      "name": "[concat( variables('vaultName'), '/Azure/', 'iaasvmcontainer;iaasvmcontainerv2;',parameters('resourcegroupname'),';', concat(copyindex(),variables('vmName')), '/vm;iaasvmcontainerv2;',parameters('resourcegroupname'), ';', concat(copyindex(),variables('vmName')))]",
       "apiVersion": "2016-06-01",
       "location": "[resourceGroup().location]",
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
@@ -247,7 +253,7 @@
       "properties": {
         "protectedItemType": "Microsoft.Compute/virtualMachines",
         "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', variables('vaultName'), variables('backupPolicyName'))]",
-        "sourceResourceId": "[resourceId(subscription().subscriptionId ,'adtest2','Microsoft.Compute/virtualMachines', concat(copyindex(),variables('vmName')) )]"
+        "sourceResourceId": "[resourceId(subscription().subscriptionId ,parameters('resourcegroupname'),'Microsoft.Compute/virtualMachines', concat(copyindex(),variables('vmName')) )]"
       }
     }
   ]
