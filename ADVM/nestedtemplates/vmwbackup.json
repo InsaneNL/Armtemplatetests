@@ -124,7 +124,7 @@
         "count": "[parameters('VMnumber')]"
         },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+        "IPcopy"
       ],
       "properties": {
         "ipConfigurations": [
@@ -180,7 +180,8 @@
         },
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-        "[concat(copyIndex(),variables('networkInterfaceName'),'-',parameters('VMpublicIP'))]"
+        "interfaceprivcopy",
+        "interfacepubcopy"
       ],
       "properties": {
         "hardwareProfile": {
@@ -235,7 +236,7 @@
       "apiVersion": "2016-12-01",
       "name": "[concat(variables('vaultName'), '/', variables('backupFabric'), '/', variables('protectionContainer'), '/', variables('protectedItem'))]",
       "dependsOn": [
-        "[concat(copyIndex(),variables('vmName'))]",
+        "vmcopy",
         "[resourceId('Microsoft.RecoveryServices/vaults', variables('vaultName'))]"
       ],
       "properties": {
