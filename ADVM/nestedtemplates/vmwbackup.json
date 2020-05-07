@@ -232,7 +232,7 @@
       "properties": {}
     },
      {
-      "name": "[concat( variables('vaultName'), '/Azure/', 'iaasvmcontainer;iaasvmcontainerv2;','adtest2', concat(copyindex(),variables('vmName')), '/vm;iaasvmcontainerv2;','adtest2', concat(copyindex(),variables('vmName')))]",
+      "name": "[concat( variables('vaultName'), '/Azure/', 'iaasvmcontainer;iaasvmcontainerv2;','adtest2',';', concat(copyindex(),variables('vmName')), '/vm;iaasvmcontainerv2;','adtest2', ';', concat(copyindex(),variables('vmName')))]",
       "apiVersion": "2016-06-01",
       "location": "[resourceGroup().location]",
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
