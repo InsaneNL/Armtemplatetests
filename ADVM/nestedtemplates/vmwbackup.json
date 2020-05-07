@@ -235,7 +235,7 @@
       "apiVersion": "2016-12-01",
       "name": "[concat(variables('vaultName'), '/', variables('backupFabric'), '/', variables('protectionContainer'), '/', variables('protectedItem'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]",
+        "[concat(copyIndex(),variables('vmName'))]",
         "[resourceId('Microsoft.RecoveryServices/vaults', variables('vaultName'))]"
       ],
       "properties": {
