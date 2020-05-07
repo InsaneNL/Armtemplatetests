@@ -179,7 +179,8 @@
         "count": "[parameters('VMnumber')]"
         },
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[concat(copyIndex(),variables('networkInterfaceName'),'-',parameters('VMpublicIP'))]"
       ],
       "properties": {
         "hardwareProfile": {

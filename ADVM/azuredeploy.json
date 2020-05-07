@@ -8,6 +8,13 @@
                 "description": "The name of the administrator account of the new VM and domain"
             }
         },
+        "CustomerName": {
+            "type": "string",
+            "maxLength": 8,
+            "metadata": {
+            "description": "Specifies a name for generating resource names."
+            }
+        },
         "adminPassword": {
             "type": "securestring",
             "metadata": {
@@ -96,8 +103,38 @@
                 "description": "Subnet IP range."
             }
 
+        },
+        "VMpublicIP": {
+            "type": "string",
+            "allowedValues": [
+                "public",
+                "private"
+            ],
+            "metadata": {
+            "description": "Public IP for VM's or not"
+            }
+        },
+        "VMnumber": {
+            "type": "int",
+            "metadata": {
+            "description": "Number of VM's to deploy"
+            }
+        },
+        "windowsOSVersion": {
+            "type": "string",
+            "defaultValue": "2016-Datacenter",
+            "allowedValues": [
+                "2008-R2-SP1",
+                "2012-Datacenter",
+                "2012-R2-Datacenter",
+                "2016-Nano-Server",
+                "2016-Datacenter-with-Containers",
+                "2016-Datacenter"
+            ],
+            "metadata": {
+                "description": "Specifies the Windows version for the VM. This will pick a fully patched image of this given Windows version. Allowed values: 2008-R2-SP1, 2012-Datacenter, 2012-R2-Datacenter, 2016-Nano-Server, 2016-Datacenter-with-Containers, 2016-Datacenter."
+            }
         }
-
     },
     "resources": [
         {
@@ -281,6 +318,50 @@
                     },
                     "location": {
                         "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+                {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "VM",
+            "dependsOn": [
+                "UpdateVNetDNS"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vmwbackup.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualNetworkName": {
+                        "value": "[parameters('virtualNetworkName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "VMpublicIP": {
+                        "value": "[parameters('VMpublicIP')]"
+                    },
+                    "dnsLabelPrefix": {
+                        "value": "[parameters('dnsPrefix')]"
+                    },
+                    "VMnumber": {
+                        "value": "[parameters('VMnumber')]"
+                    },
+                    "WindowsOSVersion": {
+                        "value": "[parameters('windowsOSVersion')]"
+                    },
+                    "Customername": {
+                        "value": "[parameters('CustomerName')]"
                     }
                 }
             }
