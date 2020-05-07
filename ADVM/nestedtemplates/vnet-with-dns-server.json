@@ -14,18 +14,6 @@
         "description": "The address range of the new VNET in CIDR format"
       }
     },
-    "subnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the subnet created in the new VNET"
-      }
-    },
-    "subnetRange": {
-      "type": "string",
-      "metadata": {
-        "description": "The address range of the subnet created in the new VNET"
-      }
-    },
     "DNSServerAddress": {
       "type": "array",
       "metadata": {
@@ -56,9 +44,15 @@
         },
         "subnets": [
           {
-            "name": "[parameters('subnetName')]",
+            "name": "ADsubnet",
             "properties": {
-              "addressPrefix": "[parameters('subnetRange')]"
+              "addressPrefix": "10.0.0.0/28"
+            }
+          },
+            {
+            "name": "VMsubnet",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24"
             }
           }
         ]
