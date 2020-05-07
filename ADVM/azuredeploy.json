@@ -70,7 +70,7 @@
         },
         "virtualNetworkAddressRange": {
             "type": "string",
-            "defaultValue": "10.0.0.0/16",
+            "defaultValue": "10.0.0.0/8",
             "metadata": {
                 "description": "Virtual network address range."
             }
@@ -173,7 +173,7 @@
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('privateIPAddress')]",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), 'adsubnet')]"
                             },
                             "publicIPAddress": { "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]"
 
