@@ -235,6 +235,10 @@
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
       "apiVersion": "2016-12-01",
       "name": "[concat(variables('vaultName'), '/', variables('backupFabric'), '/', variables('protectionContainer'), '/', variables('protectedItem'))]",
+      "copy": {
+        "name": "VMsforBackup",
+        "count": "[parameters('VMnumber')]"
+      },
       "dependsOn": [
         "vmcopy",
         "[resourceId('Microsoft.RecoveryServices/vaults', variables('vaultName'))]"
