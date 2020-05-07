@@ -89,20 +89,6 @@
                 "description": "Private IP address."
             }
         },
-        "subnetName": {
-            "type": "string",
-            "defaultValue": "adSubnet",
-            "metadata": {
-                "description": "Subnet name."
-            }
-        },
-        "subnetRange": {
-            "type": "string",
-            "defaultValue": "10.0.0.0/24",
-            "metadata": {
-                "description": "Subnet IP range."
-            }
-        },
         "publicIPAddressName": {
             "type": "string",
             "defaultValue": "adPublicIP",
@@ -142,12 +128,6 @@
                     },
                     "virtualNetworkAddressRange": {
                         "value": "[parameters('virtualNetworkAddressRange')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('subnetRange')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
@@ -293,12 +273,6 @@
                     },
                     "virtualNetworkAddressRange": {
                         "value": "[parameters('virtualNetworkAddressRange')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
-                    },
-                    "subnetRange": {
-                        "value": "[parameters('subnetRange')]"
                     },
                     "DNSServerAddress": {
                         "value": [
