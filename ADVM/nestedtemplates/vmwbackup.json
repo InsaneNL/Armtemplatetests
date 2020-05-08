@@ -271,7 +271,7 @@
           "count":  "[parameters('VMnumber')]"
       },
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('dnsLabelPrefix'),copyIndex(),'/joindomain')]",
+      "name": "[concat(copyIndex(),variables('vmName'),'/joindomain')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "vmcopy"
