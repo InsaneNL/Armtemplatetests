@@ -371,6 +371,9 @@
                     },
                     "resourcegroupname": {
                         "value": "[parameters('resourcegroupname')]"
+                    },
+                    "domaintojoin": {
+                        "value": "[parameters('domainName')]"
                     }
                 }
             }
