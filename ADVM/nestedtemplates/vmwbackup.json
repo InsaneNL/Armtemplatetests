@@ -285,7 +285,7 @@
           "Name": "[parameters('domainToJoin')]",
           "User": "[concat(parameters('domainToJoin'), '\\', parameters('adminUsername'))]",
           "Restart": "true",
-          "Options": "[parameters('adminUsername')]"
+          "Options": "3"
         },
         "protectedSettings": {
           "Password": "[parameters('adminPassword')]"
