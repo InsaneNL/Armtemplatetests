@@ -306,13 +306,11 @@
                             }
                         }
                     }
-                }
-            ]
-        },
-        {
+                },
+                {
             "apiVersion": "2018-06-01",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "virtualMachineName/Installadconnect",
+            "name": "Installadconnect",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "createADForest"
@@ -337,6 +335,8 @@
                 "$adjoinpass": "[parameters('adjoinpass')]"
                 }
             }
+        }
+            ]
         },
         {
             "type": "Microsoft.Resources/deployments",
