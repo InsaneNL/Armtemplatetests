@@ -27,6 +27,13 @@
                 "description": "The FQDN of the Active Directory Domain to be created"
             }
         },
+        "notificationSettings": {
+         "value": {
+            "notifyGlobalAdmins": "Enabled",
+            "notifyDcAdmins": "Enabled",
+            "additionalRecipients": []
+            }
+            },
         "dnsPrefix": {
             "type": "string",
             "metadata": {
@@ -61,13 +68,6 @@
                 "description": "Location for all resources."
             }
         },
-        "virtualMachineName": {
-            "type": "string",
-            "defaultValue": "adVM",
-            "metadata": {
-                "description": "Virtual machine name."
-            }
-        },
         "virtualNetworkName": {
             "type": "string",
             "defaultValue": "adVNET",
@@ -80,27 +80,6 @@
             "defaultValue": "10.0.0.0/8",
             "metadata": {
                 "description": "Virtual network address range."
-            }
-        },
-        "networkInterfaceName": {
-            "type": "string",
-            "defaultValue": "adNic",
-            "metadata": {
-                "description": "Network interface name."
-            }
-        },
-        "privateIPAddress": {
-            "type": "string",
-            "defaultValue": "10.0.0.4",
-            "metadata": {
-                "description": "Private IP address."
-            }
-        },
-        "publicIPAddressName": {
-            "type": "string",
-            "defaultValue": "adPublicIP",
-            "metadata": {
-                "description": "Subnet IP range."
             }
 
         },
@@ -143,18 +122,7 @@
         }
     },
     "resources": [
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2019-02-01",
-            "name": "[parameters('publicIPAddressName')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "publicIPAllocationMethod": "Static",
-                "dnsSettings": {
-                    "domainNameLabel": "[parameters('dnsPrefix')]"
-                }
-            }
-        },
+
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
@@ -179,161 +147,27 @@
             }
         },
         {
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2019-02-01",
-            "name": "[parameters('networkInterfaceName')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "VNet",
-                "[parameters('publicIPAddressName')]"
-
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[parameters('privateIPAddress')]",
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), 'adsubnet')]"
-                            },
-                            "publicIPAddress": { "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]"
-
-                            }
-                            
-                            
-                        }
-                    }
-                ]
-            }
+        "apiVersion": "2017-06-01",
+        "type": "Microsoft.AAD/DomainServices",
+        "name": "[parameters('domainName')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+            "VNet"
+        ],
+        "properties": {
+            "domainName": "[parameters('domainName')]",
+            "subnetId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', 'adsubnet')]",
+            "filteredSync": "disabled",
+            "notificationSettings": "[parameters('notificationSettings')]"
+             }
         },
-        {
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2019-03-01",
-            "name": "[parameters('virtualMachineName')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[parameters('networkInterfaceName')]"
 
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
-                },
-
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachineName')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2016-Datacenter",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "name": "[concat(parameters('virtualMachineName'),'_OSDisk')]",
-                        "caching": "ReadOnly",
-                        "createOption": "FromImage",
-                        "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
-                        }
-                    },
-                    "dataDisks": [
-                        {
-                            "name": "[concat(parameters('virtualMachineName'), '_DataDisk')]",
-                            "caching": "ReadWrite",
-                            "createOption": "Empty",
-                            "diskSizeGB": 20,
-                            "managedDisk": {
-                                "storageAccountType": "Standard_LRS"
-                            },
-                            "lun": 0
-                        }
-                    ]
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]"
-                        }
-                    ]
-                }
-            },
-            "resources": [
-                {
-                    "type": "extensions",
-                    "apiVersion": "2019-03-01",
-                    "name": "CreateADForest",
-                    "location": "[parameters('location')]",
-                    "dependsOn": [
-                        "[parameters('virtualMachineName')]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.Powershell",
-                        "type": "DSC",
-                        "typeHandlerVersion": "2.19",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                            "ModulesUrl": "[uri(parameters('_artifactsLocation'), concat('dsc/CreateADPDC.zip?raw=true', parameters('_artifactsLocationSasToken')))]",
-                            "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
-                            "properties":{
-                                "DomainName": "[parameters('domainName')]",
-                                "AdminCreds": {
-                                    "UserName": "[parameters('adminUsername')]",
-                                    "Password": "PrivateSettingsRef:AdminPassword"
-                                }
-                        }
-                        },
-                        "protectedSettings": {
-                            "Items": {
-                                "AdminPassword": "[parameters('adminPassword')]"
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
-            "name": "UpdateVNetDNS",
-            "dependsOn": [
-                "CreateADForest"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/vnet-with-dns-server.json', parameters('_artifactsLocationSasToken')))]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "virtualNetworkName": {
-                        "value": "[parameters('virtualNetworkName')]"
-                    },
-                    "virtualNetworkAddressRange": {
-                        "value": "[parameters('virtualNetworkAddressRange')]"
-                    },
-                    "DNSServerAddress": {
-                        "value": [
-                            "[parameters('privateIPAddress')]"
-                        ]
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
                 {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "name": "VM",
             "dependsOn": [
-                "UpdateVNetDNS"
+                "adds"
             ],
             "properties": {
                 "mode": "Incremental",
