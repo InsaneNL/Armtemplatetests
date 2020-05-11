@@ -7,10 +7,7 @@
         [String]$adjoinuser,
 
         [Parameter(Mandatory)]
-        [String]$adjoinpass,
-
-        [Int]$RetryCount=20,
-        [Int]$RetryIntervalSec=30
+        [String]$adjoinpass
     )
 
 Find-Module -Name AzureAD | Install-Module -Force -AllowClobber -Verbose 

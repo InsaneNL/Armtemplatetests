@@ -40,6 +40,18 @@
                 "description": "Size of the VM for the controller"
             }
         },
+        "adjoinuser": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the administrator account to adconnect"
+            }
+        },
+        "adjoinpass": {
+            "type": "string",
+            "metadata": {
+                "description": "the password of the administrator account to adconnect"
+            }
+        },
         "_artifactsLocation": {
             "type": "string",
             "metadata": {
@@ -316,14 +328,13 @@
                 "settings": {
                  "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File adconnect.ps1",
                 "fileUris": [
-                    "script location"
+                    "https://raw.githubusercontent.com/InsaneNL/Armtemplatetests/master/ADVM/dsc/adconnect.ps1"
                     ]
                 
                 },
             "protectedSettings": {
-                "storageAccountName": "myStorageAccountName",
-                "storageAccountKey": "myStorageAccountKey",
-                "managedIdentity" : {}
+                "adjoinuser": "[parameters('adjoinuser')]",
+                "$adjoinpass": "[parameters('adjoinpass')]"
                 }
             }
         },
