@@ -40,18 +40,6 @@
                 "description": "Size of the VM for the controller"
             }
         },
-        "adjoinuser": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the administrator account to adconnect"
-            }
-        },
-        "adjoinpass": {
-            "type": "string",
-            "metadata": {
-                "description": "the password of the administrator account to adconnect"
-            }
-        },
         "_artifactsLocation": {
             "type": "string",
             "metadata": {
@@ -308,35 +296,6 @@
                     }
                 }
             ]
-        },
-        {
-            "apiVersion": "2018-06-01",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('virtualMachineName'),'installadconnect')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "createADForest"
-            ],
-            "tags": {
-                "displayName": "installadconnect"
-            },
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.10",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                 "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File adconnect.ps1",
-                "fileUris": [
-                    "https://raw.githubusercontent.com/InsaneNL/Armtemplatetests/master/ADVM/dsc/adconnect.ps1"
-                    ]
-                
-                },
-            "protectedSettings": {
-                "adjoinuser": "[parameters('adjoinuser')]",
-                "$adjoinpass": "[parameters('adjoinpass')]"
-                }
-            }
         },
         {
             "type": "Microsoft.Resources/deployments",
