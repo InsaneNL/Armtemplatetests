@@ -10,6 +10,7 @@
         [String]$adjoinpass
     )
 
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Find-Module -Name AzureAD | Install-Module -Force -AllowClobber -Verbose 
 Find-Module -Name AZ | Install-Module -Force -AllowClobber -Verbose 
 Find-Module -Name AzureRM | Install-Module -Force -AllowClobber -Verbose 
