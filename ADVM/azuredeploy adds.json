@@ -298,36 +298,6 @@
             ]
         },
         {
-            "apiVersion": "2018-06-01",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "virtualMachineName/Installadconnect",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "createADForest"
-            ],
-            "tags": {
-                "displayName": "installadconnect"
-            },
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.10",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                 "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File adconnect.ps1",
-                "fileUris": [
-                    "script location"
-                    ]
-                
-                },
-            "protectedSettings": {
-                "storageAccountName": "myStorageAccountName",
-                "storageAccountKey": "myStorageAccountKey",
-                "managedIdentity" : {}
-                }
-            }
-        },
-        {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "name": "UpdateVNetDNS",
