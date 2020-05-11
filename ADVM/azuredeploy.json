@@ -309,7 +309,7 @@
                 },
                 {
             "apiVersion": "2018-06-01",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "type": "extensions",
             "name": "Installadconnect",
             "location": "[resourceGroup().location]",
             "dependsOn": [
