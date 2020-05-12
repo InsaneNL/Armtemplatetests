@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "nestedTemplatesLocation": {
@@ -14,6 +14,12 @@
             "type": "String",
             "metadata": {
                 "description": "The base URI where artifacts required by this template are located."
+            }
+        },
+        "subscription": {
+            "type": "String",
+            "metadata": {
+                "description": "The subscription Id."
             }
         },
         "resourceGroup": {
@@ -171,21 +177,7 @@
                 "description": "(Required when vmImageType = Gallery) Gallery image SKU."
             }
         },
-        "vmImageVhdUri": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmImageType = CustomVHD) URI of the sysprepped image vhd file to be used to create the session host VMs. For example, https://rdsstorage.blob.core.windows.net/vhds/sessionhostimage.vhd"
-            }
-        },
-        "vmCustomImageSourceId": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmImageType = CustomImage) Resource ID of the image"
-            }
-        },
-        "vmDiskType": {
+       "vmDiskType": {
             "defaultValue": "StandardSSD_LRS",
             "allowedValues": [
                 "UltraSSD_LRS",
@@ -204,13 +196,7 @@
             "metadata": {
                 "description": "True indicating you would like to use managed disks or false indicating you would like to use unmanaged disks."
             }
-        },
-        "storageAccountResourceGroupName": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmUseManagedDisks = False) The resource group containing the storage account of the image vhd file."
-            }
+
         },
         "existingVnetName": {
             "defaultValue": "",
@@ -363,41 +349,6 @@
             "type": "Object",
             "metadata": {
                 "description": "The tags to be assigned to the availability set"
-            }
-        },
-        "networkInterfaceTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the network interfaces"
-            }
-        },
-        "networkSecurityGroupTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the network security groups"
-            }
-        },
-        "publicIPAddressTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the public ip addresses"
-            }
-        },
-        "virtualMachineTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the virtual machines"
-            }
-        },
-        "imageTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the images"
             }
         },
         "apiVersion": {
@@ -584,12 +535,6 @@
                     "artifactsLocation": {
                         "value": "[parameters('artifactsLocation')]"
                     },
-                    "vmImageVhdUri": {
-                        "value": "[parameters('vmImageVhdUri')]"
-                    },
-                    "storageAccountResourceGroupName": {
-                        "value": "[parameters('storageAccountResourceGroupName')]"
-                    },
                     "vmGalleryImageOffer": {
                         "value": "[parameters('vmGalleryImageOffer')]"
                     },
@@ -626,9 +571,6 @@
                     "vhds": {
                         "value": "[variables('vhds')]"
                     },
-                    "rdshImageSourceId": {
-                        "value": "[parameters('vmCustomImageSourceId')]"
-                    },
                     "location": {
                         "value": "[parameters('vmLocation')]"
                     },
@@ -649,21 +591,6 @@
                     },
                     "networkSecurityGroupRules": {
                         "value": "[parameters('networkSecurityGroupRules')]"
-                    },
-                    "networkInterfaceTags": {
-                        "value": "[parameters('networkInterfaceTags')]"
-                    },
-                    "networkSecurityGroupTags": {
-                        "value": "[parameters('networkSecurityGroupTags')]"
-                    },
-                    "publicIPAddressTags": {
-                        "value": "[parameters('publicIPAddressTags')]"
-                    },
-                    "virtualMachineTags": {
-                        "value": "[parameters('virtualMachineTags')]"
-                    },
-                    "imageTags": {
-                        "value": "[parameters('imageTags')]"
                     },
                     "hostpoolToken": {
                         "value": "[reference(parameters('hostpoolName')).registrationInfo.token]"

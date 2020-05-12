@@ -9,18 +9,6 @@
                 "description": "The base URI where artifacts required by this template are located."
             }
         },
-        "VmImageVhdUri": {
-            "type": "String",
-            "metadata": {
-                "description": "URI of the sysprepped image vhd file to be used to create the session host VMs. For example, https://rdsstorage.blob.core.windows.net/vhds/sessionhostimage.vhd"
-            }
-        },
-        "storageAccountResourceGroupName": {
-            "type": "String",
-            "metadata": {
-                "description": "The storage account containing the custom VHD."
-            }
-        },
         "vmGalleryImageOffer": {
             "defaultValue": "",
             "type": "String",
@@ -104,13 +92,6 @@
                 "description": "The unique id of the subnet for the nics."
             }
         },
-        "rdshImageSourceId": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "Resource ID of the image."
-            }
-        },
         "location": {
             "defaultValue": "",
             "type": "String",
@@ -166,41 +147,6 @@
             "type": "Array",
             "metadata": {
                 "description": "The rules to be given to the new network security group"
-            }
-        },
-        "networkInterfaceTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the network interfaces"
-            }
-        },
-        "networkSecurityGroupTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the network security groups"
-            }
-        },
-        "publicIPAddressTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the public ip addresses"
-            }
-        },
-        "virtualMachineTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the virtual machines"
-            }
-        },
-        "imageTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the images"
             }
         },
         "vmInitialNumber": {
@@ -265,7 +211,6 @@
                             "apiVersion": "2019-02-01",
                             "name": "[variables('newNsgName')]",
                             "location": "[parameters('location')]",
-                            "tags": "[parameters('networkSecurityGroupTags')]",
                             "properties": {
                                 "securityRules": "[parameters('networkSecurityGroupRules')]"
                             }
@@ -279,7 +224,6 @@
             "apiVersion": "2019-02-01",
             "name": "[concat(parameters('rdshPrefix'), add(copyindex(), parameters('vmInitialNumber')), '-ip')]",
             "location": "[parameters('location')]",
-            "tags": "[parameters('publicIPAddressTags')]",
             "sku": {
                 "name": "[parameters('publicIpAddressSku')]"
             },
@@ -301,7 +245,6 @@
                 "NSG-linkedTemplate",
                 "rdsh-pip-loop"
             ],
-            "tags": "[parameters('networkInterfaceTags')]",
             "properties": {
                 "ipConfigurations": [
                     {
@@ -331,7 +274,6 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('rdshPrefix'), add(copyindex(), parameters('vmInitialNumber')), '-nic')]"
             ],
-            "tags": "[parameters('virtualMachineTags')]",
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "[parameters('rdshVmSize')]"
