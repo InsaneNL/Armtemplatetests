@@ -172,7 +172,8 @@
         "domain": "[if(equals(parameters('domain'), ''), last(split(parameters('administratorAccountUsername'), '@')), parameters('domain'))]",
         "storageAccountType": "[parameters('rdshVMDiskType')]",
         "newNsgName": "[concat(parameters('rdshPrefix'), 'nsg-', parameters('_guidValue'))]",
-        "nsgId": "[if(parameters('createNetworkSecurityGroup'), resourceId('Microsoft.Network/networkSecurityGroups', variables('newNsgName')), parameters('networkSecurityGroupId'))]"
+        "nsgId": "[if(parameters('createNetworkSecurityGroup'), resourceId('Microsoft.Network/networkSecurityGroups', variables('newNsgName')), parameters('networkSecurityGroupId'))]",
+        "WVDdsclocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip"
     },
     "resources": [
         {
@@ -337,7 +338,7 @@
                 "typeHandlerVersion": "2.73",
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                    "modulesUrl": "[parameters('artifactsLocation')]",
+                    "modulesUrl": "[variables('WVDdsclocation')]",
                     "configurationFunction": "Configuration.ps1\\AddSessionHost",
                     "properties": {
                         "hostPoolName": "[parameters('hostpoolName')]",
