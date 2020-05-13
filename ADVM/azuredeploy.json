@@ -140,7 +140,80 @@
             "metadata": {
                 "description": "Specifies the Windows version for the VM. This will pick a fully patched image of this given Windows version. Allowed values: 2008-R2-SP1, 2012-Datacenter, 2012-R2-Datacenter, 2016-Nano-Server, 2016-Datacenter-with-Containers, 2016-Datacenter."
             }
+        },
+        "deployWVD": {
+            "type": "string",
+            "allowedValues": [
+                "yes",
+                "no"
+            ],
+            "metadata": {
+                "description": "deploy WVD yes or no"
+            }
+        },
+        "WVDvmSize": {
+            "type": "string",
+            "defaultValue": "Standard_D2s_v3",
+            "metadata": {
+                "description": "Size of the VM for WVD"
+            }
+        },
+        "WVDnumberofinstances": {
+            "type": "string",
+            "metadata": {
+                "description": "number of VM's for WVD"
+            }
+        },
+        "WVDimage": {
+            "type": "string",
+            "metadata": {
+                "description": "Gallery image SKU. Values without a numeric suffix, such as 1903, will use the latest release available in this template."
+            },
+            "allowedValues": [
+                "Windows-10-Enterprise-multi-session-with-Office-365-ProPlus",
+                "Windows-10-Enterprise-multi-session",
+                "Windows-10-Enterprise-Latest",
+                "2016-Datacenter"
+            ],
+            "defaultValue": "Windows-10-Enterprise-multi-session-with-Office-365-ProPlus"
+        },
+        "WVDDiskType": {
+            "defaultValue": "StandardSSD_LRS",
+            "allowedValues": [
+                "UltraSSD_LRS",
+                "Premium_LRS",
+                "StandardSSD_LRS",
+                "Standard_LRS"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "The VM disk type for the VM: HDD or SSD."
+            }
+        },
+        "createWVDnsg": {
+            "type": "string",
+            "allowedValues": [
+                "true",
+                "false"
+            ],
+            "metadata": {
+                "description": "create a NSG for the WVD host pool"
+            }
+        },
+        "WVDnsgRules": {
+            "type": "array",
+            "metadata": {
+                "description": "The rules to be given to the new network security group"
+            }
+        },
+        "WVDmaxUsers": {
+            "type": "int",
+            "defaultValue": 100,
+            "metadata": {
+                "description": "Maximum number of users for WVD"
+            }
         }
+
     },
     "resources": [
         {
@@ -373,6 +446,114 @@
                         "value": "[parameters('resourcegroupname')]"
                     },
                     "domaintojoin": {
+                        "value": "[parameters('domainName')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "SetupWVD",
+            "condition": "[equals(parameters('deployWVD'),'yes')]",
+            "dependsOn": [
+                "UpdateVNetDNS"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/wvdv2.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "artifactsLocation": {
+                        "value": "[parameters('_artifactsLocation')]"
+                    },
+                    "resourceGroup": {
+                        "value": "[parameters('resourcegroupname')]"
+                    },
+                    "Hostpoolname": {
+                        "value": "[concat(parameters('CustomerName'), '_hostpool')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "workSpaceName": {
+                        "value": "[concat(parameters('CustomerName'), '_workspace')]"
+                    },                   
+                    "addToWorkspace": {
+                        "value": "true"
+                    },
+                    "allApplicationGroupReferences": {
+                        "value": ""
+                    },
+                    "administratorAccountUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "administratorAccountPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "createAvailabilitySet": {
+                        "value": "true"
+                    },
+                    "vmSize": {
+                        "value": "[parameters('WVDvmSize')]"
+                    },
+                    "vmNumberOfInstances": {
+                        "value": "[parameters('WVDnumberofinstances')]"
+                    },
+                    "vmNamePrefix": {
+                        "value": "[concat(parameters('CustomerName'), '_wvd_')]"
+                    },
+                    "vmImageType": {
+                        "value": "Gallery"
+                    },
+                    "rdshGalleryImageSKU": {
+                        "value": "[parameters('WVDimage')]"
+                    },
+                    "vmDisktype": {
+                        "value": "[parameters('WVDDiskType')]"
+                    },
+                    "vmUseManagedDisks": {
+                        "value": "true"
+                    },
+                    "existingVnetName": {
+                        "value": "[parameters('virtualNetworkName')]"
+                    },
+                    "existingSubnetName": {
+                        "vaule": "VMsubnet"
+                    },
+                    "usePublicIP": {
+                        "value": "false"
+                    },
+                    "publicIpAddressSku": {
+                        "value": "Basic"
+                    },
+                    "publicIpAddressType": {
+                        "Value": "dynamic"
+                    },
+                    "createNetworkSecurityGroup": {
+                        "value": "[parameters('createWVDnsg')]"
+                    },
+                    "networkSecurityGroupRules": {
+                        "value": "[parameters('WVDnsgRules')]"
+                    },
+                    "hostpoolType": {
+                        "value": "pooled"
+                    },
+                    "maxSessionLimit":{
+                        "value": "[parameters('WVDmaxUsers')]"
+                    },
+                    "loadBalancerType": {
+                        "value": "BreadthFirst"
+                    },
+                    "apiVersion": {
+                        "value": "2019-12-10-preview"
+                    },
+                    "validationEnviroment": {
+                        "value": "false"
+                    },
+                    "domain": {
                         "value": "[parameters('domainName')]"
                     }
                 }

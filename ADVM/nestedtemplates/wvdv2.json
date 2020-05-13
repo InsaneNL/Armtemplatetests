@@ -1,25 +1,12 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "nestedTemplatesLocation": {
-            "defaultValue": "https://catalogartifact.azureedge.net/publicartifacts/Microsoft.Hostpool-ARM-1.0.2-preview/",
-            "type": "String",
-            "metadata": {
-                "description": "The base URI where artifacts required by this template are located."
-            }
-        },
         "artifactsLocation": {
             "defaultValue": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip",
             "type": "String",
             "metadata": {
                 "description": "The base URI where artifacts required by this template are located."
-            }
-        },
-        "subscription": {
-            "type": "String",
-            "metadata": {
-                "description": "The subscription Id."
             }
         },
         "resourceGroup": {
@@ -34,20 +21,6 @@
                 "description": "The name of the Hostpool to be created."
             }
         },
-        "hostpoolFriendlyName": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The friendly name of the Hostpool to be created."
-            }
-        },
-        "hostpoolDescription": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The description of the Hostpool to be created."
-            }
-        },
         "location": {
             "type": "String",
             "metadata": {
@@ -59,20 +32,6 @@
             "type": "String",
             "metadata": {
                 "description": "The name of the workspace to be attach to new Applicaiton Group."
-            }
-        },
-        "workspaceLocation": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The location of the workspace."
-            }
-        },
-        "workspaceResourceGroup": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The workspace resource group Name."
             }
         },
         "allApplicationGroupReferences": {
@@ -109,20 +68,6 @@
                 "description": "Whether to create a new availability set for the VMs"
             }
         },
-        "vmResourceGroup": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The resource group of the session host VMs."
-            }
-        },
-        "vmLocation": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The location of the session host VMs."
-            }
-        },
         "vmSize": {
             "defaultValue": "",
             "type": "String",
@@ -156,26 +101,18 @@
                 "description": "Select the image source for the session host vms. VMs from a Gallery image will be created with Managed Disks."
             }
         },
-        "vmGalleryImageOffer": {
-            "defaultValue": "",
-            "type": "String",
+        "rdshGalleryImageSKU": {
+            "type": "string",
             "metadata": {
-                "description": "(Required when vmImageType = Gallery) Gallery image Offer."
-            }
-        },
-        "vmGalleryImagePublisher": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmImageType = Gallery) Gallery image Publisher."
-            }
-        },
-        "vmGalleryImageSKU": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmImageType = Gallery) Gallery image SKU."
-            }
+                "description": "(Required when rdshImageSource = Gallery) Gallery image SKU. Values without a numeric suffix, such as 1903, will use the latest release available in this template."
+            },
+            "allowedValues": [
+                "Windows-10-Enterprise-multi-session-with-Office-365-ProPlus",
+                "Windows-10-Enterprise-multi-session",
+                "Windows-10-Enterprise-Latest",
+                "2016-Datacenter"
+            ],
+            "defaultValue": "Windows-10-Enterprise-multi-session-with-Office-365-ProPlus"
         },
        "vmDiskType": {
             "defaultValue": "StandardSSD_LRS",
@@ -210,13 +147,6 @@
             "type": "String",
             "metadata": {
                 "description": "The subnet the VMs will be placed in."
-            }
-        },
-        "virtualNetworkResourceGroupName": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The resource group containing the existing virtual network."
             }
         },
         "usePublicIP": {
@@ -317,40 +247,6 @@
                 "description": "Hostpool rdp properties"
             }
         },
-        "vmTemplate": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "The necessary information for adding more VMs to this Hostpool"
-            }
-        },
-        "tokenExpirationTime": {
-            "type": "String",
-            "metadata": {
-                "description": "Hostpool token expiration time"
-            }
-        },
-        "hostpoolTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the hostpool"
-            }
-        },
-        "applicationGroupTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the application group"
-            }
-        },
-        "availabilitySetTags": {
-            "defaultValue": {},
-            "type": "Object",
-            "metadata": {
-                "description": "The tags to be assigned to the availability set"
-            }
-        },
         "apiVersion": {
             "defaultValue": "2019-12-10-preview",
             "type": "String",
@@ -385,21 +281,24 @@
             "metadata": {
                 "description": "Domain to join"
             }
-        }
+        },
+        "baseTime":{
+            "type":"string",
+            "defaultValue": "[utcNow('u')]"
+         }
     },
     "variables": {
+        "tokenexperation": "[dateTimeAdd(parameters('baseTime'), 'P1D')]",
         "createVMs": "[greater(parameters('vmNumberOfInstances'),0)]",
         "rdshManagedDisks": "[if(equals(parameters('vmImageType'), 'CustomVHD'), parameters('vmUseManagedDisks'), bool('true'))]",
         "rdshPrefix": "[concat(parameters('vmNamePrefix'),'-')]",
         "avSetSKU": "[if(variables('rdshManagedDisks'), 'Aligned', 'Classic')]",
-        "existingDomainUsername": "[first(split(parameters('administratorAccountUsername'), '@'))]",
         "vhds": "[concat('vhds','/', variables('rdshPrefix'))]",
-        "subnet-id": "[resourceId(parameters('virtualNetworkResourceGroupName'),'Microsoft.Network/virtualNetworks/subnets',parameters('existingVnetName'), parameters('existingSubnetName'))]",
+        "subnet-id": "[resourceId(parameters('resourceGroup'),'Microsoft.Network/virtualNetworks/subnets',parameters('existingVnetName'), parameters('existingSubnetName'))]",
         "resourceGroup": "[replace(parameters('resourceGroup'),'\"','')]",
         "hostpoolName": "[replace(parameters('hostpoolName'),'\"','')]",
-        "hostpoolFriendlyName": "[parameters('hostpoolFriendlyName')]",
         "vmTemplateName": "[concat( if(variables('rdshManagedDisks'), 'managedDisks', 'unmanagedDisks'), '-', toLower(replace(parameters('vmImageType'),' ', '')), 'vm')]",
-        "vmTemplateUri": "[concat(parameters('nestedTemplatesLocation'), variables('vmTemplateName'),'.json')]",
+        "vmTemplateUri": "https://raw.githubusercontent.com/InsaneNL/Armtemplatetests/master/ADVM/nestedtemplates/wvdVM.json",
         "rdshVmNamesOutput": {
             "copy": [
                 {
@@ -411,21 +310,47 @@
                 }
             ]
         },
+        "galleryImage": {
+            "Windows-10-Enterprise-multi-session-with-Office-365-ProPlus": {
+                "publisher": "MicrosoftWindowsDesktop",
+                "offer": "office-365",
+                "sku": "19h2-evd-o365pp",
+                "version": "latest"
+            },
+            "Windows-10-Enterprise-multi-session": {
+                "publisher": "MicrosoftWindowsDesktop",
+                "offer": "Windows-10",
+                "sku": "19h2-evd",
+                "version": "latest"
+
+            },
+            "Windows-10-Enterprise-Latest": {
+                "publisher": "MicrosoftWindowsDesktop",
+                "offer": "Windows-10",
+                "sku": "19h2-ent",
+                "version": "latest"
+            },
+            "2016-Datacenter": {
+                "publisher": "MicrosoftwindowsServer",
+                "offer": "WindowsServer",
+                "sku": "2016-Datacenter",
+                "version": "latest"
+            }
+        },
+        "Image": "[variables('galleryimage')[parameters('rdshGalleryImageSKU')]]",
         "appGroupName": "[concat(variables('hostpoolName'),'-DAG')]",
         "appGroupResourceId": "[createArray(resourceId('Microsoft.DesktopVirtualization/applicationgroups/', variables('appGroupName')))]",
-        "workspaceResourceGroup": "[if(empty(parameters('workspaceResourceGroup')), parameters('resourceGroup'), parameters('workspaceResourceGroup'))]",
-        "applicationGroupReferencesArr": "[if(equals('',parameters('allApplicationGroupReferences')), variables('appGroupResourceId'), concat(split(parameters('allApplicationGroupReferences'),','), variables('appGroupResourceId')))]"
-    },
+        "applicationGroupReferencesArr": "[if(equals('',parameters('allApplicationGroupReferences')), variables('appGroupResourceId'), concat(split(parameters('allApplicationGroupReferences'),','), variables('appGroupResourceId')))]",
+        "wvdlocation": "eastus",
+        "vmTemplate": "[concat(parameters('domain'),',', variables('Image'),',',parameters('vmImageType'), ',', parameters('vmNamePrefix'), ',', parameters('vmDiskType'), ',', parameters('vmUseManagedDisks'), ',', parameters('vmSize')  )]"
+        },
     "resources": [
         {
             "type": "Microsoft.DesktopVirtualization/hostpools",
             "apiVersion": "[parameters('apiVersion')]",
             "name": "[parameters('hostpoolName')]",
-            "location": "[parameters('location')]",
-            "tags": "[parameters('hostpoolTags')]",
+            "location": "[variables('wvdLocation')]",
             "properties": {
-                "friendlyName": "[parameters('hostpoolFriendlyName')]",
-                "description": "[parameters('hostpoolDescription')]",
                 "hostpoolType": "[parameters('hostpoolType')]",
                 "customRdpProperty": "[parameters('customRdpProperty')]",
                 "personalDesktopAssignmentType": "[parameters('personalDesktopAssignmentType')]",
@@ -434,11 +359,11 @@
                 "validationEnviroment": "[parameters('validationEnviroment')]",
                 "ring": null,
                 "registrationInfo": {
-                    "expirationTime": "[parameters('tokenExpirationTime')]",
+                    "expirationTime": "[variables('tokenexperation')]",
                     "token": null,
                     "registrationTokenOperation": "Update"
                 },
-                "vmTemplate": "[parameters('vmTemplate')]"
+                "vmTemplate": "[variables('vmTemplate')]"
             }
         },
         {
@@ -449,7 +374,6 @@
             "dependsOn": [
                 "[resourceId('Microsoft.DesktopVirtualization/hostpools/', parameters('hostpoolName'))]"
             ],
-            "tags": "[parameters('applicationGroupTags')]",
             "properties": {
                 "hostpoolarmpath": "[resourceId('Microsoft.DesktopVirtualization/hostpools/', parameters('hostpoolName'))]",
                 "friendlyName": "Default Desktop",
@@ -474,7 +398,7 @@
                             "apiVersion": "[parameters('apiVersion')]",
                             "name": "[parameters('workSpaceName')]",
                             "type": "Microsoft.DesktopVirtualization/workspaces",
-                            "location": "[parameters('workspaceLocation')]",
+                            "location": "[variables('wvdLocation')]",
                             "properties": {
                                 "applicationGroupReferences": "[variables('applicationGroupReferencesArr')]"
                             }
@@ -482,7 +406,7 @@
                     ]
                 }
             },
-            "resourceGroup": "[variables('workspaceResourceGroup')]",
+            "resourceGroup": "[parameters('resourceGroup')]",
             "condition": "[parameters('addToWorkspace')]"
         },
         {
@@ -501,9 +425,8 @@
                         {
                             "apiVersion": "2018-10-01",
                             "type": "Microsoft.Compute/availabilitySets",
-                            "name": "[concat(variables('rdshPrefix'), 'availabilitySet-', parameters('vmLocation'))]",
-                            "location": "[parameters('vmLocation')]",
-                            "tags": "[parameters('availabilitySetTags')]",
+                            "name": "[concat(variables('rdshPrefix'), 'availabilitySet-', parameters('Location'))]",
+                            "location": "[parameters('Location')]",
                             "properties": {
                                 "platformUpdateDomainCount": 5,
                                 "platformFaultDomainCount": 2
@@ -515,7 +438,7 @@
                     ]
                 }
             },
-            "resourceGroup": "[parameters('vmResourceGroup')]",
+            "resourceGroup": "[parameters('resourceGroup')]",
             "condition": "[parameters('createAvailabilitySet')]"
         },
         {
@@ -535,15 +458,10 @@
                     "artifactsLocation": {
                         "value": "[parameters('artifactsLocation')]"
                     },
-                    "vmGalleryImageOffer": {
-                        "value": "[parameters('vmGalleryImageOffer')]"
+                    "image": {
+                        "value": "[variables('Image')]"
                     },
-                    "vmGalleryImagePublisher": {
-                        "value": "[parameters('vmGalleryImagePublisher')]"
-                    },
-                    "vmGalleryImageSKU": {
-                        "value": "[parameters('vmGalleryImageSKU')]"
-                    },
+
                     "rdshPrefix": {
                         "value": "[variables('rdshPrefix')]"
                     },
@@ -572,7 +490,7 @@
                         "value": "[variables('vhds')]"
                     },
                     "location": {
-                        "value": "[parameters('vmLocation')]"
+                        "value": "[parameters('Location')]"
                     },
                     "usePublicIP": {
                         "value": "[parameters('usePublicIP')]"
@@ -609,7 +527,7 @@
                     }
                 }
             },
-            "resourceGroup": "[parameters('vmResourceGroup')]",
+            "resourceGroup": "[parameters('resourceGroup')]",
             "condition": "[variables('createVMs')]"
         }
     ],

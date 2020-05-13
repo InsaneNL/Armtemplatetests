@@ -9,25 +9,11 @@
                 "description": "The base URI where artifacts required by this template are located."
             }
         },
-        "vmGalleryImageOffer": {
+        "image": {
             "defaultValue": "",
             "type": "String",
             "metadata": {
                 "description": "(Required when vmImageType = Gallery) Gallery image Offer."
-            }
-        },
-        "vmGalleryImagePublisher": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmImageType = Gallery) Gallery image Publisher."
-            }
-        },
-        "vmGalleryImageSKU": {
-            "defaultValue": "",
-            "type": "String",
-            "metadata": {
-                "description": "(Required when vmImageType = Gallery) Gallery image SKU."
             }
         },
         "rdshPrefix": {
@@ -78,12 +64,6 @@
             "type": "SecureString",
             "metadata": {
                 "description": "The password that corresponds to the existing domain username."
-            }
-        },
-        "vhds": {
-            "type": "String",
-            "metadata": {
-                "description": "The URL to store unmanaged disks."
             }
         },
         "subnet-id": {
@@ -287,12 +267,7 @@
                     "adminPassword": "[parameters('administratorAccountPassword')]"
                 },
                 "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[parameters('vmGalleryImagePublisher')]",
-                        "offer": "[parameters('vmGalleryImageOffer')]",
-                        "sku": "[parameters('vmGalleryImageSKU')]",
-                        "version": "latest"
-                    },
+                    "imageReference": "[parameters('image')]",
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
