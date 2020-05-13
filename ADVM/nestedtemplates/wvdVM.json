@@ -11,7 +11,7 @@
         },
         "image": {
             "defaultValue": "",
-            "type": "String",
+            "type": "object",
             "metadata": {
                 "description": "(Required when vmImageType = Gallery) Gallery image Offer."
             }
