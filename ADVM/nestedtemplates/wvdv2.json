@@ -368,7 +368,7 @@
             "type": "Microsoft.DesktopVirtualization/applicationgroups",
             "apiVersion": "[parameters('apiVersion')]",
             "name": "[variables('appGroupName')]",
-            "location": "[parameters('location')]",
+            "location": "[variables('wvdLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.DesktopVirtualization/hostpools/', parameters('hostpoolName'))]"
             ],
