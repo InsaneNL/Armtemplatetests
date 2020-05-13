@@ -342,7 +342,7 @@
         "appGroupResourceId": "[createArray(resourceId('Microsoft.DesktopVirtualization/applicationgroups/', variables('appGroupName')))]",
         "applicationGroupReferencesArr": "[if(equals('',parameters('allApplicationGroupReferences')), variables('appGroupResourceId'), concat(split(parameters('allApplicationGroupReferences'),','), variables('appGroupResourceId')))]",
         "wvdlocation": "eastus",
-        "vmTemplate": "[concat(parameters('domain'),',', variables('Image'),',',parameters('vmImageType'), ',', parameters('vmNamePrefix'), ',', parameters('vmDiskType'), ',', parameters('vmUseManagedDisks'), ',', parameters('vmSize')  )]"
+        "vmTemplate": "[concat(parameters('domain'),',',variables('Image'),',',parameters('vmImageType'),',',parameters('vmNamePrefix'),',',parameters('vmDiskType'),',',parameters('vmUseManagedDisks'),',', parameters('vmSize'))]"
         },
     "resources": [
         {
