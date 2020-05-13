@@ -293,7 +293,6 @@
         "rdshManagedDisks": "[if(equals(parameters('vmImageType'), 'CustomVHD'), parameters('vmUseManagedDisks'), bool('true'))]",
         "rdshPrefix": "[concat(parameters('vmNamePrefix'),'-')]",
         "avSetSKU": "[if(variables('rdshManagedDisks'), 'Aligned', 'Classic')]",
-        "vhds": "[concat('vhds','/', variables('rdshPrefix'))]",
         "subnet-id": "[resourceId(parameters('resourceGroup'),'Microsoft.Network/virtualNetworks/subnets',parameters('existingVnetName'), parameters('existingSubnetName'))]",
         "resourceGroup": "[replace(parameters('resourceGroup'),'\"','')]",
         "hostpoolName": "[replace(parameters('hostpoolName'),'\"','')]",
@@ -483,9 +482,6 @@
                     },
                     "subnet-id": {
                         "value": "[variables('subnet-id')]"
-                    },
-                    "vhds": {
-                        "value": "[variables('vhds')]"
                     },
                     "location": {
                         "value": "[parameters('Location')]"
