@@ -310,7 +310,7 @@
                 "settings": {
                     "name": "[variables('domain')]",
                     "ouPath": "[parameters('ouPath')]",
-                    "user": "[parameters('administratorAccountUsername')]",
+                    "User": "[concat(parameters('domain'), '\\', parameters('administratorAccountUsername'))]",
                     "restart": "true",
                     "options": "3"
                 },
