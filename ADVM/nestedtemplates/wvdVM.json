@@ -171,7 +171,7 @@
         "existingDomainUsername": "[first(split(parameters('administratorAccountUsername'), '@'))]",
         "domain": "[if(equals(parameters('domain'), ''), last(split(parameters('administratorAccountUsername'), '@')), parameters('domain'))]",
         "storageAccountType": "[parameters('rdshVMDiskType')]",
-        "newNsgName": "[concat(parameters('rdshPrefix'), 'nsg-', parameters('_guidValue'))]",
+        "newNsgName": "[concat(parameters('rdshPrefix'), 'nsg', parameters('_guidValue'))]",
         "nsgId": "[if(parameters('createNetworkSecurityGroup'), resourceId('Microsoft.Network/networkSecurityGroups', variables('newNsgName')), parameters('networkSecurityGroupId'))]",
         "WVDdsclocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip",
         "allports": "[parameters('networkSecurityGroupRules')]"
