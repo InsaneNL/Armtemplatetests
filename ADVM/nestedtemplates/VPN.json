@@ -27,7 +27,7 @@
     },
     "virtualNetworkName": {
       "type": "string",
-      "defaultValue": "azureVnet",
+      "defaultValue": "templateVNET",
       "metadata": {
         "description": "name of the Azure Virtual Network"
       }
