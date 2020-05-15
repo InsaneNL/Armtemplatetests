@@ -173,7 +173,8 @@
         "storageAccountType": "[parameters('rdshVMDiskType')]",
         "newNsgName": "[concat(parameters('rdshPrefix'), 'nsg-', parameters('_guidValue'))]",
         "nsgId": "[if(parameters('createNetworkSecurityGroup'), resourceId('Microsoft.Network/networkSecurityGroups', variables('newNsgName')), parameters('networkSecurityGroupId'))]",
-        "WVDdsclocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip"
+        "WVDdsclocation": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration.zip",
+        "allports": "[parameters('networkSecurityGroupRules')]"
     },
     "resources": [
         {
@@ -193,8 +194,23 @@
                             "name": "[variables('newNsgName')]",
                             "location": "[parameters('location')]",
                             "properties": {
-                                "securityRules": "[parameters('networkSecurityGroupRules')]"
-                            }
+                                "securityRules": [
+                                {
+                                "name": "enabledPorts",
+                                "properties": {
+                                "description": "enabledPorts",
+                                "protocol": "Tcp",
+                                "sourcePortRange": "*",
+                                "destinationPortRanges": "[variables('Allports')]",
+                                "sourceAddressPrefix": "*",
+                                "destinationAddressPrefixes": "*",
+                                "access": "Allow",
+                                "priority": 100,
+                                "direction": "Inbound"
+                                    }
+                                }
+                             ]
+                        }
                         }
                     ]
                 }

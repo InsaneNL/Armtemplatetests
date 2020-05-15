@@ -70,7 +70,7 @@
         },
         "virtualNetworkName": {
             "type": "string",
-            "defaultValue": "adVNET",
+            "defaultValue": "templateVNET",
             "metadata": {
                 "description": "Virtual network name."
             }
@@ -209,6 +209,42 @@
             "defaultValue": 100,
             "metadata": {
                 "description": "Maximum number of users for WVD"
+            }
+        },
+        "DeployVPN": {
+            "type": "string",
+            "allowedValues": [
+                "true",
+                "false"
+            ]
+        },
+        "CustomerVPNip": {
+            "type": "string",
+            "metadata": {
+                "description": "External IP adres for the on-premise side of the VPN"
+            }
+        },
+        "CustomerNetworkRange": {
+            "type": "string",
+            "metadata": {
+                "description": "Network adres range and subnet number for the on-premise side of the vpn"
+            }
+        },
+        "VPNgatewaySku": {
+            "type": "string",
+            "allowedValues": [
+            "Basic",
+            "Standard",
+            "HighPerformance"           
+            ],
+            "metadata": {
+                "description": "VPN gateway Type"
+            }
+        },
+        "VPNsharedKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Shared key for the VPN connection"
             }
         }
 
@@ -445,6 +481,48 @@
                     },
                     "domaintojoin": {
                         "value": "[parameters('domainName')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "DeployVPN",
+            "condition": "[equals(parameters('deployVPN'),'yes')]",
+            "dependsOn": [
+                "CreateADForest"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(parameters('_artifactsLocation'), concat('nestedtemplates/VPN.json', parameters('_artifactsLocationSasToken')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualNetworkName": {
+                        "value": "[parameters('virtualNetworkName')]"
+                    },
+                    "virtualNetworkAddressRange": {
+                        "value": "[parameters('virtualNetworkAddressRange')]"
+                    },
+                    "CustomerName": {
+                        "value": "[parameters('CustomerName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "localGatewayIpAddress":{
+                        "value": "[parameters('CustomerVPNip')]"
+                    },
+                    "localAddressPrefix": {
+                        "value": "[parameters('CustomerNetworkRange')]"
+                    },
+                    "gatewaySku": {
+                        "value": "[parameters('VPNgatewaySku')]"
+                    },
+                    "sharedKey": {
+                        "value": "[parameters('VPNsharedKey')]"
                     }
                 }
             }

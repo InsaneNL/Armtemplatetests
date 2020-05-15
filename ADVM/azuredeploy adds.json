@@ -70,7 +70,7 @@
         },
         "virtualNetworkName": {
             "type": "string",
-            "defaultValue": "adVNET",
+            "defaultValue": "templateVNET",
             "metadata": {
                 "description": "Virtual network name."
             }
