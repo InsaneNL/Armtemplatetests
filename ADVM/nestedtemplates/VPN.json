@@ -121,7 +121,6 @@
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('gatewayPublicIPName')]",
-      "dependsOn": [  "[resourceId('Microsoft.Network/virtualNetworks/subnets/', parameters('virtualNetworkName'),'gatewaySubnet')]" ],
       "location": "[resourceGroup().location]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic"
@@ -133,7 +132,8 @@
       "name": "[variables('gatewayName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('gatewayPublicIPName'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('gatewayPublicIPName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets/', parameters('virtualNetworkName'),'gatewaySubnet')]" 
       ],
       "properties": {
         "ipConfigurations": [
@@ -145,6 +145,7 @@
               },
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('gatewayPublicIPName'))]"
+                
               }
             },
             "name": "vnetGatewayConfig"
