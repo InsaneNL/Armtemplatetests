@@ -203,7 +203,7 @@
                                 "sourcePortRange": "*",
                                 "destinationPortRanges": "[variables('Allports')]",
                                 "sourceAddressPrefix": "*",
-                                "destinationAddressPrefixes": "*",
+                                "destinationAddressPrefix": "*",
                                 "access": "Allow",
                                 "priority": 100,
                                 "direction": "Inbound"

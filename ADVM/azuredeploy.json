@@ -214,8 +214,8 @@
         "DeployVPN": {
             "type": "string",
             "allowedValues": [
-                "true",
-                "false"
+                "yes",
+                "no"
             ]
         },
         "CustomerVPNip": {
@@ -225,7 +225,7 @@
             }
         },
         "CustomerNetworkRange": {
-            "type": "string",
+            "type": "array",
             "metadata": {
                 "description": "Network adres range and subnet number for the on-premise side of the vpn"
             }
