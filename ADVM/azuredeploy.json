@@ -6,7 +6,7 @@
             "type": "string",
             "metadata": {
                 "description": "The name of the administrator account of the new VM and domain"
-            }
+            } 
         },
         "CustomerName": {
             "type": "string",
